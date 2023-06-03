@@ -12,8 +12,8 @@ class State:
     # 초기화
     def __init__(self, pieces=None, enemy_pieces=None, depth=0, pass_count=0):
         # 보드 9칸, 기본으로 가지고 있을 말 6개
-        self.pieces = pieces if pieces != None else [0] * (9 + 6)
-        self.enemy_pieces = enemy_pieces if enemy_pieces != None else [0] * (9 + 6)
+        self.pieces = pieces if pieces != None else [0] * (3 * 3 + 6)
+        self.enemy_pieces = enemy_pieces if enemy_pieces != None else [0] * (3 * 3 + 6)
         self.depth = depth
         self.pass_count = pass_count
 
@@ -57,11 +57,9 @@ class State:
                 return True
         return False
 
-# todo
-
     # 무승부 여부 확인
     def is_draw(self):
-        return self.piece_count(self.pieces) + self.piece_count(self.enemy_pieces) == 9
+        return self.depth == 30
 
     # 게임 종료 여부 확인
     def is_done(self):
@@ -70,36 +68,79 @@ class State:
     # 다음 상태 얻기
     def next(self, action):
         pieces = self.pieces.copy()
-        pieces[action] = 1
-        return State(self.enemy_pieces, pieces)
+        enemy_pieces = self.enemy_pieces.copy()
+        depth = self.depth + 1
+        pass_count = self.pass_count
+        if action[0] == 0:
+            return State(enemy_pieces, pieces, depth, pass_count)
+        pieces[action[1]] = action[0]
+        pieces[action[0] + 8] = 0
+        enemy_pieces[action[1]] = 0
+        return State(enemy_pieces, pieces, depth, pass_count)
 
     # 합법적인 수의 리스트 얻기
     def legal_actions(self):
-        actions = []
-        for i in range(9):
-            if self.pieces[i] == 0 and self.enemy_pieces[i] == 0:
-                actions.append(i)
+        actions = [[0, 0]]
+        for i in range(1, 7):
+            if self.pieces[i + 8] == 0:
+                continue
+            for j in range(9):
+                if self.pieces[j] < i and self.enemy_pieces[j] < i:
+                    actions.append([i, j])
         return actions
 
     # 선 수 여부 확인
     def is_first_player(self):
-        return self.piece_count(self.pieces) == self.piece_count(self.enemy_pieces)
+        return self.depth % 2 == 0
 
     # 문자열 표시
     def __str__(self):
-        ox = ('o', 'x') if self.is_first_player() else ('x', 'o')
         str = ''
+        o = ['1', '2', '3', '4', '5', '6']
+        x = ['F', 'E', 'D', 'C', 'B', 'A']
+        ox = (o, x) if self.is_first_player() else (x, o)
+
+        if self.is_first_player():
+            for i in range(6):
+                if self.pieces[i + 9] != 0:
+                    str += o[i]
+                else:
+                    str += '-'
+        else :
+            for i in range(6):
+                if self.enemy_pieces[i + 9] != 0:
+                    str += o[i]
+                else:
+                    str += '-'
+        str += "\n======"
+
         for i in range(9):
-            if self.pieces[i] == 1:
-                str += ox[0]
-            elif self.enemy_pieces[i] == 1:
-                str += ox[1]
+            if i % 3 == 0:
+                str += '\n'
+            if self.pieces[i] != 0:
+                str += ox[0][self.pieces[i] - 1]
+            elif self.enemy_pieces[i] != 0:
+                str += ox[1][self.enemy_pieces[i] - 1]
             else:
                 str += '-'
-            if i % 3 == 2:
-                str += '\n'
+
+        str += "\n======\n"
+        if self.is_first_player():
+            for i in range(6):
+                if self.enemy_pieces[i + 9] != 0:
+                    str += x[i]
+                else:
+                    str += '-'
+        else :
+            for i in range(6):
+                if self.pieces[i + 9] != 0:
+                    str += x[i]
+                else:
+                    str += '-'
+        str += '\n'
         return str
 
+# todo
 
 # 랜덤으로 행동 선택
 def random_action(state):
@@ -242,7 +283,7 @@ def mcts_action(state):
     root_node.expand()
 
     # 루트 노드를 100회 평가
-    for _ in range(100):
+    for _ in range(1000):
         root_node.evaluate()
 
     # 시행 횟수 최대값을 갖는 행동 반환
