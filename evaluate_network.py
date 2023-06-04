@@ -55,10 +55,10 @@ def update_best_player():
 # 네트워크 평가
 def evaluate_network():
     # 최신 플레이어 모델 로드
-    model0 = load_model('./model/latest.h5', compile=False)
+    model0 = load_model('./model/latest.h5')
 
     # 베스트 플레이어 모델 로드
-    model1 = load_model('./model/best.h5', compile=False)
+    model1 = load_model('./model/best.h5')
 
     # PV MCTS를 활용해 행동 선택을 수행하는 함수 생성
     next_action0 = pv_mcts_action(model0, EN_TEMPERATURE)
