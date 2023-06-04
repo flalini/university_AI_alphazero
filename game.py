@@ -65,28 +65,57 @@ class State:
     def is_done(self):
         return self.is_lose() or self.is_draw()
 
+    # 듀얼 네트워크 입력 2차원 배열 얻기
+    def pieces_array(self):
+        def flag_array_of(flag):
+            table = [flag] * 9
+            return table
+
+        # 플레이어 별 듀얼 네트워크 입력 1차원 배열 얻기
+        def pieces_array_of(pieces, table_list):
+            #보드의 피스
+            for j in range(1, 7):
+                table = [0] * 9
+                table_list.append(table)
+                for i in range(9):
+                    if pieces[i] == j:
+                        table[i] = 1
+
+            # 가지고 있는 피스
+            for j in range(6):
+                flag = 1 if pieces[9 + j] > 0 else 0
+                table_list.append(flag_array_of(flag))
+            return table_list
+
+        # 듀얼 네트워크 입력 2차원 배열 반환
+        return [pieces_array_of(self.enemy_pieces, pieces_array_of(self.pieces, [flag_array_of(self.pass_count), flag_array_of(self.depth % 2)]))]
+
     # 다음 상태 얻기
     def next(self, action):
         pieces = self.pieces.copy()
         enemy_pieces = self.enemy_pieces.copy()
         depth = self.depth + 1
         pass_count = self.pass_count
-        if action[0] == 0:
-            return State(enemy_pieces, pieces, depth, pass_count)
-        pieces[action[1]] = action[0]
-        pieces[action[0] + 8] = 0
-        enemy_pieces[action[1]] = 0
-        return State(enemy_pieces, pieces, depth, pass_count)
+        if action == 54:
+            return State(enemy_pieces, pieces, depth, pass_count + 1)
+        pos = action // 6
+        rank = action % 6 + 1
+        pieces[pos] = rank
+        pieces[rank + 8] = 0
+        enemy_pieces[pos] = 0
+        return State(enemy_pieces, pieces, depth, 0)
 
     # 합법적인 수의 리스트 얻기
     def legal_actions(self):
-        actions = [[0, 0]]
+        #actions에 패스 넣어두고 시작
+        actions = [54]
+        #i 말의 강함, j 위치
         for i in range(1, 7):
             if self.pieces[i + 8] == 0:
                 continue
             for j in range(9):
                 if self.pieces[j] < i and self.enemy_pieces[j] < i:
-                    actions.append([i, j])
+                    actions.append(j * 6 + i - 1)
         return actions
 
     # 선 수 여부 확인
