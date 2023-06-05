@@ -7,14 +7,8 @@ from tensorflow.keras.layers import Activation, Add, BatchNormalization, Conv2D,
 from tensorflow.keras.models import Model
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras import backend as K
+from macro import DN_FILTERS, DN_RESIDUAL_NUM, DN_INPUT_SHAPE, DN_OUTPUT_SIZE
 import os
-
-# 파라미터 준비
-DN_FILTERS = 128  # 컨볼루션 레이어 커널 수(오리지널: 256))
-DN_RESIDUAL_NUM = 16  # 레지듀얼 블록 수(오리지널: 19)
-DN_INPUT_SHAPE = (3, 3, 26)  # 입력 셰이프
-#(게임판:3*3)*(자신의 말 배치:6 + 상대의 말 배치:6 + 자신의 말:6 + 상대의 말:6 + 상대의패스여부:1 + 선후수:1)
-DN_OUTPUT_SIZE = 55 # 행동 수(말의 이동 도착 위치(9) * 말의 종류(6) + 패스(1))
 
 
 # 컨볼루션 레이어 생성

@@ -5,7 +5,7 @@
 # 패키지 임포트
 from game import State
 from pv_mcts import pv_mcts_scores
-from dual_network import DN_OUTPUT_SIZE
+from macro import DN_OUTPUT_SIZE, SP_GAME_COUNT, SP_TEMPERATURE
 from datetime import datetime
 from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
@@ -13,10 +13,6 @@ from pathlib import Path
 import numpy as np
 import pickle
 import os
-
-# 파라미터 준비
-SP_GAME_COUNT = 50  # 셀프 플레이를 수행할 게임 수(오리지널: 25,000)
-SP_TEMPERATURE = 1.0  # 볼츠만 분포의 온도 파라미터
 
 
 # 선 수 플레이어 가치

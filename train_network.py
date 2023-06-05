@@ -8,11 +8,9 @@ from tensorflow.keras.callbacks import LearningRateScheduler, LambdaCallback
 from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
 from pathlib import Path
+from macro import RN_EPOCHS
 import numpy as np
 import pickle
-
-# 파라미터 준비
-RN_EPOCHS = 100  # 학습 횟수
 
 
 # 학습 데이터 로드

@@ -7,13 +7,14 @@ from dual_network import dual_network
 from self_play import self_play
 from train_network import train_network
 from evaluate_network import evaluate_network
+from assemble_history import assemble_history
+from macro import SP_SEP_COUNT
 import gc
-
-SP_SEP_COUNT = 10
 
 # 듀얼 네트워크 생성
 dual_network()
 
+#for i in range(10):
 for i in range(1):
     print('Train', i, '====================')
     # 셀프 플레이 파트
@@ -22,6 +23,8 @@ for i in range(1):
     for j in range(SP_SEP_COUNT):
         self_play()
         gc.collect()
+
+    # assemble_history()
 
     # 파라미터 변경 파트
     train_network()
