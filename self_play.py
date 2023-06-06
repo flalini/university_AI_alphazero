@@ -31,6 +31,7 @@ def write_data(history):
         now.year, now.month, now.day, now.hour, now.minute, now.second)
     with open(path, mode='wb') as f:
         pickle.dump(history, f)
+        f.close()
 
 
 # 1 게임 실행
