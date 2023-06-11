@@ -98,7 +98,4 @@ def self_play():
 
 # 동작 확인
 if __name__ == '__main__':
-    import gc
-    for i in range(4):
-        gc.collect()
-        self_play()
+    self_play()

@@ -36,7 +36,7 @@ if __name__ == '__main__':
             actions = state.legal_actions()
             while True:
                 p, v = input("위치와 사용할 피스:").split()
-                action = int(p) * 6 + int(v) - 1
+                action = (int(p) - 1) * 6 + int(v) - 1
                 if action in actions :
                     break
 
