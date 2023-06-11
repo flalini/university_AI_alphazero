@@ -8,6 +8,7 @@ from self_play import self_play
 from train_network import train_network
 from evaluate_network import evaluate_network
 from assemble_history import assemble_history
+from shutil import copy
 from macro import SP_SEP_COUNT
 import sys
 import gc
@@ -15,8 +16,10 @@ import gc
 # 듀얼 네트워크 생성
 dual_network()
 
-#for i in range(10):
-for i in range(9):
+for i in range(38, 40):
+    if (i % 10 == 0) :
+        save_name = './model/best' + str(i) + '.h5'
+        copy('./model/best.h5', save_name)
     print('Train', i, '====================', file=sys.stderr)
     # 셀프 플레이 파트
     # 코랩에서 self_play 실행시 ram 용량이 꽉 차는 문제가 생겨
@@ -35,3 +38,5 @@ for i in range(9):
     # 신규 파라미터 평가 파트
     evaluate_network()
     gc.collect()
+save_name = './model/best' + '40' + '.h5'
+copy('./model/best.h5', save_name)
